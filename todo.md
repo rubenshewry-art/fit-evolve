@@ -110,11 +110,11 @@
 ## Fase 5: Módulo Multidisciplinar (HealthTech)
 
 ### Painel de Privacidade
-- [ ] Criar tela de controle de privacidade
-- [ ] Listar profissionais vinculados
-- [ ] Implementar toggles de acesso (por tipo de dado)
-- [ ] Permitir revogar acesso imediatamente
-- [ ] Salvar preferências no banco
+- [x] Criar tela de controle de privacidade
+- [x] Listar profissionais vinculados
+- [x] Implementar toggles de acesso (por tipo de dado)
+- [x] Permitir revogar acesso imediatamente
+- [x] Salvar preferências no banco
 
 ### Upload de Exames
 - [x] Criar tela de upload de exames
