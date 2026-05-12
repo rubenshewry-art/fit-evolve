@@ -36,9 +36,9 @@ export interface MonthlyReport {
     earnedAt: Date;
   }>;
   progressMetrics: {
-    consistency: number; // 0-100
-    engagement: number; // 0-100
-    completion: number; // 0-100
+    consistency: number;
+    engagement: number;
+    completion: number;
   };
 }
 
@@ -49,8 +49,14 @@ export async function generateMonthlyReport(
 ): Promise<MonthlyReport> {
   const db = await getDb();
 
+  if (!db) {
+    throw new Error("Database connection failed");
+  }
+
   const startDate = new Date(year, month - 1, 1);
   const endDate = new Date(year, month, 0, 23, 59, 59);
+
+  const studentIdNum = parseInt(studentId);
 
   // Get photos for the month
   const monthPhotos = await db
@@ -58,7 +64,7 @@ export async function generateMonthlyReport(
     .from(photos)
     .where(
       and(
-        eq(photos.studentId, studentId),
+        eq(photos.studentId, studentIdNum),
         gte(photos.createdAt, startDate),
         lte(photos.createdAt, endDate)
       )
@@ -70,7 +76,7 @@ export async function generateMonthlyReport(
     .from(exams)
     .where(
       and(
-        eq(exams.studentId, studentId),
+        eq(exams.studentId, studentIdNum),
         gte(exams.createdAt, startDate),
         lte(exams.createdAt, endDate)
       )
@@ -82,7 +88,7 @@ export async function generateMonthlyReport(
     .from(posts)
     .where(
       and(
-        eq(posts.studentId, studentId),
+        eq(posts.studentId, studentIdNum),
         gte(posts.createdAt, startDate),
         lte(posts.createdAt, endDate)
       )
@@ -94,7 +100,7 @@ export async function generateMonthlyReport(
     .from(insights)
     .where(
       and(
-        eq(insights.studentId, studentId),
+        eq(insights.studentId, studentIdNum),
         gte(insights.createdAt, startDate),
         lte(insights.createdAt, endDate)
       )
@@ -106,7 +112,7 @@ export async function generateMonthlyReport(
     .from(studentBadges)
     .where(
       and(
-        eq(studentBadges.studentId, studentId),
+        eq(studentBadges.studentId, studentIdNum),
         gte(studentBadges.earnedAt, startDate),
         lte(studentBadges.earnedAt, endDate)
       )

@@ -32,10 +32,16 @@ export async function getExamHistory(
 ) {
   const db = await getDb();
 
+  if (!db) {
+    throw new Error("Database connection failed");
+  }
+
+  const studentIdNum = parseInt(studentId);
+
   const query = db
     .select()
     .from(exams)
-    .where(eq(exams.studentId, studentId));
+    .where(eq(exams.studentId, studentIdNum));
 
   if (examType && examType !== "all") {
     // Filter by exam type if specified
@@ -56,6 +62,10 @@ export async function compareExams(
   previousExamId?: string
 ): Promise<ExamComparison> {
   const db = await getDb();
+
+  if (!db) {
+    throw new Error("Database connection failed");
+  }
 
   // Get current exam
   const currentExam = await db
