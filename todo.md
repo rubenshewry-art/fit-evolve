@@ -29,10 +29,10 @@
 - [ ] Redirecionar para Home após onboarding
 
 ### Perfil de Usuário
-- [ ] Criar schema de usuário estendido (tipo, foto, bio)
-- [ ] Implementar tela de perfil
-- [ ] Permitir editar dados pessoais
-- [ ] Adicionar foto de perfil
+- [x] Criar schema de usuário estendido (tipo, foto, bio)
+- [x] Implementar tela de perfil
+- [x] Permitir editar dados pessoais
+- [x] Adicionar foto de perfil
 
 ---
 
