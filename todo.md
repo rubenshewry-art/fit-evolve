@@ -122,6 +122,9 @@
 - [x] Implementar OCR (expo-document-scanner ou similar)
 - [x] Extrair dados do exame
 - [x] Armazenar exame no S3
+- [x] Visualização prévia de arquivo
+- [x] Seleção de tipo de exame
+- [x] Validação de arquivo
 
 ### Análise de IA
 - [x] Integrar OpenAI LLM
