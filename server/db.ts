@@ -324,6 +324,13 @@ export async function updateExam(examId: number, data: Partial<InsertExam>) {
   await db.update(exams).set(data).where(eq(exams.id, examId));
 }
 
+export async function deleteExam(examId: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+
+  await db.delete(exams).where(eq(exams.id, examId));
+}
+
 /**
  * Insight Queries
  */

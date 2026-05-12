@@ -117,19 +117,19 @@
 - [ ] Salvar preferências no banco
 
 ### Upload de Exames
-- [ ] Criar tela de upload de exames
-- [ ] Permitir câmera ou galeria
-- [ ] Implementar OCR (expo-document-scanner ou similar)
-- [ ] Extrair dados do exame
-- [ ] Armazenar exame no S3
+- [x] Criar tela de upload de exames
+- [x] Permitir câmera ou galeria
+- [x] Implementar OCR (expo-document-scanner ou similar)
+- [x] Extrair dados do exame
+- [x] Armazenar exame no S3
 
 ### Análise de IA
-- [ ] Integrar OpenAI LLM
-- [ ] Criar função de análise de biomarcadores
-- [ ] Cruzar dados com carga de treino
-- [ ] Cruzar dados com suplementação
-- [ ] Gerar insights personalizados
-- [ ] Exibir insights em card
+- [x] Integrar OpenAI LLM
+- [x] Criar função de análise de biomarcadores
+- [x] Cruzar dados com carga de treino
+- [x] Cruzar dados com suplementação
+- [x] Gerar insights personalizados
+- [x] Exibir insights em card
 
 ### Histórico de Exames
 - [ ] Criar tela de histórico de exames
