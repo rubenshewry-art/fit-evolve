@@ -14,12 +14,12 @@
 
 ## Fase 1: Autenticação e Onboarding (MVP)
 
-### Autenticação
-- [ ] Implementar login com OAuth Manus
-- [ ] Criar tela de login/registro
-- [ ] Implementar logout
-- [ ] Persistir sessão (token em SecureStore)
-- [ ] Criar hook `useAuth` customizado
+### Autenticacao
+- [x] Implementar login com OAuth Manus
+- [x] Criar tela de login/registro
+- [x] Implementar logout
+- [x] Persistir sessao (token em SecureStore)
+- [x] Criar hook `useAuth` customizado
 
 ### Onboarding
 - [ ] Criar splash screen com logo Fit_Evolve
