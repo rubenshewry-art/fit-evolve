@@ -22,11 +22,11 @@
 - [x] Criar hook `useAuth` customizado
 
 ### Onboarding
-- [ ] Criar splash screen com logo Fit_Evolve
-- [ ] Criar slides de boas-vindas (3 slides)
-- [ ] Implementar seleção de tipo de usuário (Aluno/Profissional)
-- [ ] Solicitar permissões (câmera, galeria, notificações)
-- [ ] Redirecionar para Home após onboarding
+- [x] Criar splash screen com logo Fit_Evolve
+- [x] Criar slides de boas-vindas (3 slides)
+- [x] Implementar selecao de tipo de usuario (Aluno/Profissional)
+- [x] Solicitar permissoes (camera, galeria, notificacoes)
+- [x] Redirecionar para Home apos onboarding
 
 ### Perfil de Usuário
 - [x] Criar schema de usuário estendido (tipo, foto, bio)
