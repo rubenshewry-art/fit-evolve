@@ -1,4 +1,6 @@
 import { ScrollView, Text, View, Pressable } from "react-native";
+import { useRouter } from "expo-router";
+import * as Haptics from "expo-haptics";
 import { ScreenContainer } from "@/components/screen-container";
 
 /**
@@ -12,6 +14,7 @@ import { ScreenContainer } from "@/components/screen-container";
  * - Notificações e insights recentes
  */
 export default function HomeScreen() {
+  const router = useRouter();
   return (
     <ScreenContainer className="p-4">
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
@@ -35,9 +38,10 @@ export default function HomeScreen() {
             <Text className="text-lg font-semibold text-foreground">Ações Rápidas</Text>
             <View className="gap-2">
               <Pressable
-                className="flex-row items-center gap-3 rounded-lg bg-surface p-4"
+                className="flex-row items-center gap-3 rounded-lg bg-surface p-4 active:opacity-70"
                 onPress={() => {
-                  // TODO: Navigate to camera
+                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                  router.push('/camera');
                 }}
               >
                 <View className="h-12 w-12 items-center justify-center rounded-full bg-primary">

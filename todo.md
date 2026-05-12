@@ -39,17 +39,17 @@
 ## Fase 2: Módulo de Evolução Visual
 
 ### Câmera e Captura
-- [ ] Implementar câmera com overlay padronizado
-- [ ] Criar overlay com guias de posição (frente, lateral, costas)
-- [ ] Tirar foto com preview
-- [ ] Confirmar ou refazer foto
-- [ ] Salvar foto no cofre privado
+- [x] Implementar câmera com overlay padronizado
+- [x] Criar overlay com guias de posição (frente, lateral, costas)
+- [x] Tirar foto com preview
+- [x] Confirmar ou refazer foto
+- [x] Salvar foto no cofre privado
 
 ### Cofre de Fotos Privadas
-- [ ] Criar armazenamento local (Expo FileSystem)
-- [ ] Implementar criptografia básica
-- [ ] Garantir que fotos não apareçam na galeria do celular
-- [ ] Criar interface de visualização do cofre
+- [x] Criar armazenamento local (Expo FileSystem)
+- [x] Implementar criptografia básica
+- [x] Garantir que fotos não aparecem na galeria do celular
+- [x] Criar interface de visualização do cofre
 
 ### Timeline de Fotos
 - [ ] Criar tela de timeline (scroll horizontal)
