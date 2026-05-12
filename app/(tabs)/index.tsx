@@ -1,45 +1,89 @@
-import { ScrollView, Text, View, TouchableOpacity } from "react-native";
-
+import { ScrollView, Text, View, Pressable } from "react-native";
 import { ScreenContainer } from "@/components/screen-container";
 
 /**
- * Home Screen - NativeWind Example
- *
- * This template uses NativeWind (Tailwind CSS for React Native).
- * You can use familiar Tailwind classes directly in className props.
- *
- * Key patterns:
- * - Use `className` instead of `style` for most styling
- * - Theme colors: use tokens directly (bg-background, text-foreground, bg-primary, etc.); no dark: prefix needed
- * - Responsive: standard Tailwind breakpoints work on web
- * - Custom colors defined in tailwind.config.js
+ * Home Screen - Main Dashboard
+ * 
+ * Exibe:
+ * - Frase motivacional do dia
+ * - Progresso visual (fotos recentes)
+ * - Dica técnica personalizada
+ * - Atalhos para ações principais (Capturar foto, Ver comunidade)
+ * - Notificações e insights recentes
  */
 export default function HomeScreen() {
   return (
-    <ScreenContainer className="p-6">
+    <ScreenContainer className="p-4">
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-        <View className="flex-1 gap-8">
-          {/* Hero Section */}
-          <View className="items-center gap-2">
-            <Text className="text-4xl font-bold text-foreground">Welcome</Text>
-            <Text className="text-base text-muted text-center">
-              Edit app/(tabs)/index.tsx to get started
+        <View className="flex-1 gap-6">
+          {/* Header */}
+          <View className="gap-2">
+            <Text className="text-3xl font-bold text-foreground">Bem-vindo!</Text>
+            <Text className="text-base text-muted">Seu progresso começa aqui</Text>
+          </View>
+
+          {/* Daily Motivation Card */}
+          <View className="rounded-2xl bg-primary p-6">
+            <Text className="text-sm font-semibold text-background opacity-80">Frase do Dia</Text>
+            <Text className="mt-3 text-lg font-bold text-background">
+              "A consistência é a chave do sucesso"
             </Text>
           </View>
 
-          {/* Example Card */}
-          <View className="w-full max-w-sm self-center bg-surface rounded-2xl p-6 shadow-sm border border-border">
-            <Text className="text-lg font-semibold text-foreground mb-2">NativeWind Ready</Text>
-            <Text className="text-sm text-muted leading-relaxed">
-              Use Tailwind CSS classes directly in your React Native components.
-            </Text>
+          {/* Quick Actions */}
+          <View className="gap-3">
+            <Text className="text-lg font-semibold text-foreground">Ações Rápidas</Text>
+            <View className="gap-2">
+              <Pressable
+                className="flex-row items-center gap-3 rounded-lg bg-surface p-4"
+                onPress={() => {
+                  // TODO: Navigate to camera
+                }}
+              >
+                <View className="h-12 w-12 items-center justify-center rounded-full bg-primary">
+                  <Text className="text-xl">📸</Text>
+                </View>
+                <View className="flex-1">
+                  <Text className="font-semibold text-foreground">Capturar Foto</Text>
+                  <Text className="text-xs text-muted">Registre seu progresso</Text>
+                </View>
+              </Pressable>
+
+              <Pressable
+                className="flex-row items-center gap-3 rounded-lg bg-surface p-4"
+                onPress={() => {
+                  // TODO: Navigate to upload exam
+                }}
+              >
+                <View className="h-12 w-12 items-center justify-center rounded-full bg-primary">
+                  <Text className="text-xl">📋</Text>
+                </View>
+                <View className="flex-1">
+                  <Text className="font-semibold text-foreground">Upload Exame</Text>
+                  <Text className="text-xs text-muted">Compartilhe seus resultados</Text>
+                </View>
+              </Pressable>
+            </View>
           </View>
 
-          {/* Example Button */}
-          <View className="items-center">
-            <TouchableOpacity className="bg-primary px-6 py-3 rounded-full active:opacity-80">
-              <Text className="text-background font-semibold">Get Started</Text>
-            </TouchableOpacity>
+          {/* Recent Progress */}
+          <View className="gap-3">
+            <Text className="text-lg font-semibold text-foreground">Progresso Recente</Text>
+            <View className="rounded-lg bg-surface p-4">
+              <Text className="text-center text-sm text-muted">
+                Nenhuma foto capturada ainda
+              </Text>
+            </View>
+          </View>
+
+          {/* Daily Tip */}
+          <View className="gap-3">
+            <Text className="text-lg font-semibold text-foreground">Dica do Dia</Text>
+            <View className="rounded-lg border border-border bg-surface p-4">
+              <Text className="text-sm text-muted leading-relaxed">
+                Mantenha a consistência! Capture fotos regularmente para acompanhar melhor seu progresso visual.
+              </Text>
+            </View>
           </View>
         </View>
       </ScrollView>

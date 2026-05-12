@@ -1,5 +1,17 @@
 # Fit_Evolve — Backlog de Desenvolvimento
 
+## Fase 0: Navegação Principal
+
+### Tab Bar e Estrutura de Navegação
+- [x] Criar estrutura de tab bar com 5 abas (Home, Comunidade, Profissionais, Relatórios, Perfil)
+- [x] Implementar ícones customizados para cada aba
+- [x] Criar telas vazias para cada aba
+- [x] Implementar navegação entre abas
+- [x] Adicionar feedback háptico ao trocar de aba
+- [x] Configurar cores e tipografia conforme brand
+
+---
+
 ## Fase 1: Autenticação e Onboarding (MVP)
 
 ### Autenticação
