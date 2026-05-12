@@ -87,17 +87,17 @@
 ## Fase 4: Módulo de Comunidade (Social Feed)
 
 ### Feed de Conquistas
-- [ ] Criar tela de feed
-- [ ] Implementar publicação de conquistas (foto + texto)
-- [ ] Permitir privacidade por post (público/privado)
-- [ ] Exibir posts em ordem cronológica
-- [ ] Implementar filtros (Minhas, Todos, Seguindo)
+- [x] Criar tela de feed
+- [x] Implementar publicação de conquistas (foto + texto)
+- [x] Permitir privacidade por post (público/privado)
+- [x] Exibir posts em ordem cronológica
+- [x] Implementar filtros (Minhas, Todos, Seguindo)
 
 ### Marcação de Profissionais
-- [ ] Criar botão "Marcar Profissional" em posts
-- [ ] Implementar seleção de profissional
-- [ ] Atualizar post com marcação
-- [ ] Notificar profissional (vitrine)
+- [x] Criar botão "Marcar Profissional" em posts
+- [x] Implementar seleção de profissional
+- [x] Atualizar post com marcação
+- [x] Notificar profissional (vitrine)
 
 ### Vínculo com Academias
 - [ ] Criar tabela de academias
@@ -152,11 +152,11 @@
 - [ ] Implementar download/compartilhamento de PDF
 
 ### Badges e Conquistas
-- [ ] Definir badges (ex: 10 fotos, 1 mês consistente, etc)
-- [ ] Implementar lógica de desbloqueio
-- [ ] Exibir badges na tela de perfil
-- [ ] Exibir badges no relatório mensal
-- [ ] Notificar quando badge é desbloqueada
+- [x] Definir badges (ex: 10 fotos, 1 mês consistente, etc)
+- [x] Implementar lógica de desbloqueio
+- [x] Exibir badges na tela de perfil
+- [x] Exibir badges no relatório mensal
+- [x] Notificar quando badge é desbloqueada
 
 ### Frase do Dia
 - [ ] Criar banco de frases motivacionais
