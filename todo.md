@@ -145,11 +145,11 @@
 ## Fase 6: Módulo de Retenção (Gamificação)
 
 ### Relatórios Mensais
-- [ ] Criar schema de relatório
-- [ ] Consolidar dados de todos os profissionais
-- [ ] Gerar gráficos de progresso
-- [ ] Criar template de PDF
-- [ ] Implementar download/compartilhamento de PDF
+- [x] Criar schema de relatório
+- [x] Consolidar dados de todos os profissionais
+- [x] Gerar gráficos de progresso
+- [x] Criar template de PDF
+- [x] Implementar download/compartilhamento de PDF
 
 ### Badges e Conquistas
 - [x] Definir badges (ex: 10 fotos, 1 mês consistente, etc)
