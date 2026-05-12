@@ -3,6 +3,7 @@ import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
 import { publicProcedure, router } from "./_core/trpc";
 import { examRouter } from "./exam-routers";
+import { examComparisonRouter } from "./exam-comparison-routers";
 import { privacyRouter } from "./privacy-routers";
 import { socialRouter } from "./social-routers";
 import { profileRouter } from "./profile-routers";
@@ -23,6 +24,9 @@ export const appRouter = router({
 
   // Exam and OCR Analysis routes
   exam: examRouter,
+
+  // Exam Comparison and History routes
+  examComparison: examComparisonRouter,
 
   // Privacy and Permissions routes
   privacy: privacyRouter,

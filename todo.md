@@ -135,10 +135,10 @@
 - [x] Exibir insights em card
 
 ### Histórico de Exames
-- [ ] Criar tela de histórico de exames
-- [ ] Permitir visualizar exame anterior
-- [ ] Comparar resultados (antes/depois)
-- [ ] Exportar exame em PDF
+- [x] Criar tela de histórico de exames
+- [x] Permitir visualizar exame anterior
+- [x] Comparar resultados (antes/depois)
+- [x] Exportar exame em PDF
 
 ---
 
