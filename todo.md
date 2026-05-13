@@ -263,3 +263,35 @@
 - [ ] Fase 7: Modelo de Negócio
 - [ ] Fase 8: Testes e Polimento
 - [ ] Fase 9: Entrega e Deploy
+
+
+---
+
+## Fase 14: Marketplace de Profissionais
+
+### Tela de Marketplace
+- [x] Criar tela de marketplace de profissionais
+- [x] Listar profissionais disponíveis
+- [x] Implementar filtros por especialidade
+- [x] Implementar filtros por avaliação
+- [x] Exibir foto de perfil do profissional
+- [x] Mostrar bio e especialidades
+
+### Avaliações e Reviews
+- [x] Criar sistema de avaliações (1-5 estrelas)
+- [x] Permitir alunos avaliar profissionais
+- [x] Exibir média de avaliações
+- [x] Mostrar número de avaliações
+- [x] Exibir comentários de avaliações
+
+### Vitrine de Posts Marcados
+- [x] Exibir posts onde profissional foi marcado
+- [x] Mostrar fotos de evolução dos alunos
+- [x] Exibir resultados e conquistas
+- [x] Permitir compartilhar vitrine
+
+### Conexão com Profissional
+- [x] Criar botão "Conectar" ou "Contratar"
+- [x] Enviar notificação ao profissional
+- [x] Criar chat ou mensagens
+- [x] Exibir status de conexão
