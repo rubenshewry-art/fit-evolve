@@ -1,4 +1,5 @@
 import { useState, useRef } from "react";
+import { useRouter } from "expo-router";
 import {
   ScrollView,
   Text,
@@ -51,6 +52,7 @@ const SLIDES: OnboardingSlide[] = [
 ];
 
 export default function OnboardingScreen() {
+  const router = useRouter();
   const colors = useColors();
   const [currentSlide, setCurrentSlide] = useState(0);
   const [userType, setUserType] = useState<"student" | "professional" | null>(null);
@@ -91,7 +93,7 @@ export default function OnboardingScreen() {
 
       Alert.alert("Sucesso", "Onboarding concluido! Bem-vindo ao Fit_Evolve");
       // Navigate to home
-      // router.replace("/(tabs)");
+      router.replace("/(tabs)");
     } catch (error) {
       console.error("[Onboarding] Permission error:", error);
       Alert.alert(
@@ -108,8 +110,9 @@ export default function OnboardingScreen() {
       setCurrentSlide(currentSlide + 1);
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     } else {
-      // Show user type selection
-      setUserType(null);
+      // Move to user type selection screen
+      setCurrentSlide(SLIDES.length);
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     }
   };
 
