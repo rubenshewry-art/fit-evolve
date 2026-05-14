@@ -144,4 +144,41 @@ export const profileRouter = router({
       return { completion: 0, items: [] };
     }
   }),
+
+  /**
+   * Check if onboarding is completed
+   */
+  checkOnboardingStatus: protectedProcedure.query(async ({ ctx }) => {
+    try {
+      const student = await db.getStudentByUserId(ctx.user.id);
+      if (!student) {
+        return { completed: false };
+      }
+
+      const completed = await profileService.hasCompletedOnboarding(student.id);
+      return { completed };
+    } catch (error) {
+      console.error("[ProfileRouter] Error checking onboarding status:", error);
+      return { completed: false };
+    }
+  }),
+
+  /**
+   * Mark onboarding as completed
+   */
+  completeOnboarding: protectedProcedure.mutation(async ({ ctx }) => {
+    try {
+      const student = await db.getStudentByUserId(ctx.user.id);
+      if (!student) {
+        throw new Error("Student profile not found");
+      }
+
+      return await profileService.markOnboardingCompleted(student.id);
+    } catch (error) {
+      console.error("[ProfileRouter] Error completing onboarding:", error);
+      throw new Error(
+        error instanceof Error ? error.message : "Failed to complete onboarding"
+      );
+    }
+  }),
 });

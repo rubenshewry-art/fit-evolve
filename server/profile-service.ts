@@ -6,7 +6,7 @@
 
 import { eq } from "drizzle-orm";
 import { getDb } from "./db";
-import { students, posts, exams, studentBadges } from "../drizzle/schema";
+import { students, posts, exams, studentBadges, professionals } from "../drizzle/schema";
 
 export interface StudentProfile {
   id: number;
@@ -325,5 +325,99 @@ export async function getProfileCompletionDetails(
   } catch (error) {
     console.error("[ProfileService] Error getting completion details:", error);
     return { completion: 0, items: [] };
+  }
+}
+
+/**
+ * Mark onboarding as completed for a student
+ */
+export async function markOnboardingCompleted(studentId: number) {
+  try {
+    const db = await getDb();
+    if (!db) throw new Error("Database connection failed");
+
+    await db
+      .update(students)
+      .set({ onboardingCompleted: true })
+      .where(eq(students.id, studentId));
+
+    return { success: true, message: "Onboarding marked as completed" };
+  } catch (error) {
+    console.error("[ProfileService] Error marking onboarding completed:", error);
+    throw new Error(
+      error instanceof Error ? error.message : "Failed to mark onboarding completed"
+    );
+  }
+}
+
+/**
+ * Check if student has completed onboarding
+ */
+export async function hasCompletedOnboarding(studentId: number): Promise<boolean> {
+  try {
+    const db = await getDb();
+    if (!db) throw new Error("Database connection failed");
+
+    const studentData = await db
+      .select()
+      .from(students)
+      .where(eq(students.id, studentId));
+
+    if (!studentData.length) {
+      return false;
+    }
+
+    const student = studentData[0] as any;
+    return student.onboardingCompleted === true;
+  } catch (error) {
+    console.error("[ProfileService] Error checking onboarding status:", error);
+    return false;
+  }
+}
+
+/**
+ * Mark onboarding as completed for a professional
+ */
+export async function markProfessionalOnboardingCompleted(professionalId: number) {
+  try {
+    const db = await getDb();
+    if (!db) throw new Error("Database connection failed");
+
+    await db
+      .update(professionals)
+      .set({ onboardingCompleted: true })
+      .where(eq(professionals.id, professionalId));
+
+    return { success: true, message: "Professional onboarding marked as completed" };
+  } catch (error) {
+    console.error("[ProfileService] Error marking professional onboarding completed:", error);
+    throw new Error(
+      error instanceof Error ? error.message : "Failed to mark professional onboarding completed"
+    );
+  }
+}
+
+/**
+ * Check if professional has completed onboarding
+ */
+export async function hasProfessionalCompletedOnboarding(professionalId: number): Promise<boolean> {
+  try {
+    const db = await getDb();
+    if (!db) throw new Error("Database connection failed");
+
+    const professionalData = await db
+      .select()
+      .from(professionals)
+      .where(eq(professionals.id, professionalId));
+
+    if (!professionalData.length) {
+      return false;
+    }
+
+    const professional = professionalData[0] as any;
+    return professional.onboardingCompleted === true;
+  } catch (error) {
+    console.error("[ProfileService] Error checking professional onboarding status:", error);
+    return false;
   }
 }

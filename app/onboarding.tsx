@@ -60,6 +60,7 @@ export default function OnboardingScreen() {
   const scrollX = useRef(new Animated.Value(0)).current;
 
   const updateProfileMutation = trpc.profile.updateProfile.useMutation();
+  const completeOnboardingMutation = trpc.profile.completeOnboarding.useMutation();
 
   const handleRequestPermissions = async () => {
     try {
@@ -90,6 +91,9 @@ export default function OnboardingScreen() {
           name: userType === "student" ? "Aluno" : "Profissional",
         });
       }
+
+      // Mark onboarding as completed in database
+      await completeOnboardingMutation.mutateAsync();
 
       Alert.alert("Sucesso", "Onboarding concluido! Bem-vindo ao Fit_Evolve");
       // Navigate to home

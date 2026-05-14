@@ -15,6 +15,13 @@
       "when": 1778234100226,
       "tag": "0001_bizarre_talisman",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1778792583193,
+      "tag": "0002_dapper_colossus",
+      "breakpoints": true
     }
   ]
 }
