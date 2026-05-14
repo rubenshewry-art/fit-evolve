@@ -8,6 +8,7 @@ import { privacyRouter } from "./privacy-routers";
 import { socialRouter } from "./social-routers";
 import { profileRouter } from "./profile-routers";
 import { marketplaceRouter } from "./marketplace-routers";
+import { timelapseRouter } from "./timelapse-routers";
 
 export const appRouter = router({
   // if you need to use socket.io, read and register route in server/_core/index.ts, all api should start with '/api/' so that the gateway can route correctly
@@ -40,6 +41,9 @@ export const appRouter = router({
 
   // Marketplace routes
   marketplace: marketplaceRouter,
+
+  // Timelapse routes
+  timelapse: timelapseRouter,
 
   // TODO: add feature routers here, e.g.
   // todo: router({

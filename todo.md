@@ -52,15 +52,15 @@
 - [x] Criar interface de visualização do cofre
 
 ### Timeline de Fotos
-- [ ] Criar tela de timeline (scroll horizontal)
-- [ ] Exibir fotos com datas
-- [ ] Permitir deletar fotos
-- [ ] Mostrar progresso visual (antes/depois)
+- [x] Criar tela de timeline (scroll horizontal)
+- [x] Exibir fotos com datas
+- [x] Permitir deletar fotos
+- [x] Mostrar progresso visual (antes/depois)
 
 ### Gerador de Timelapse
-- [ ] Criar função para gerar vídeo timelapse
-- [ ] Permitir exportar vídeo
-- [ ] Compartilhar timelapse no feed
+- [x] Criar função para gerar vídeo timelapse
+- [x] Permitir exportar vídeo
+- [x] Compartilhar timelapse no feed
 
 ---
 
