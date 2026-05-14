@@ -9,42 +9,46 @@ import {
 
 /**
  * Hook para inicializar e gerenciar notificações
+ * Nota: Notificações push remotas foram removidas do Expo Go no SDK 53+
+ * Use um development build para testar notificações completas
  */
 export function useNotifications() {
   useEffect(() => {
-    // Inicializar notificações
-    initializeNotifications()
-
-    // Agendar dica do dia para as 8:00 AM
-    scheduleDailyNotification(
-      'daily_tip',
-      'Dica do dia: Mantenha a consistência! Capture fotos regularmente.',
-      8,
-      0
-    )
-
-    // Agendar lembrete para as 6:00 PM
-    scheduleDailyNotification(
-      'reminder',
-      'Lembrete: Capture sua foto de evolução hoje',
-      18,
-      0
-    )
-
-    console.log('[useNotifications] Notificações inicializadas')
+    // Inicializar notificações (apenas local)
+    try {
+      initializeNotifications()
+      console.log('[useNotifications] Notificações inicializadas (modo local)')
+      
+      // Nota: Agendamento de notificações diárias desabilitado no Expo Go
+      // Funciona apenas em development build
+      // Para testar, gere um development build com: eas build --platform android --profile preview
+    } catch (error) {
+      // Ignorar erro se estiver no Expo Go
+      console.warn('[useNotifications] Notificações não disponíveis no Expo Go')
+    }
   }, [])
 
-  // Escutar notificações
+  // Escutar notificações (apenas em development build)
   useEffect(() => {
-    const unsubscribe = useNotificationListener((notification) => {
-      console.log('[useNotifications] Notificação recebida:', notification)
-    })
-
-    return unsubscribe
+    try {
+      const unsubscribe = useNotificationListener((notification) => {
+        console.log('[useNotifications] Notificação recebida:', notification)
+      })
+      return unsubscribe
+    } catch (error) {
+      // Ignorar erro se estiver no Expo Go
+      return () => {}
+    }
   }, [])
 
   return {
-    sendNotification: sendLocalNotification,
+    sendNotification: (type: NotificationType, body: string, data?: Record<string, any>) => {
+      try {
+        return sendLocalNotification(type, body, data)
+      } catch (error) {
+        console.warn('[useNotifications] Erro ao enviar notificação:', error)
+      }
+    },
   }
 }
 

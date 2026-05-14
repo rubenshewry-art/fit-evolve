@@ -209,6 +209,7 @@ export async function scheduleDailyNotification(
       (scheduledTime.getTime() - now.getTime()) / 1000
     )
 
+    // Usar trigger de segundos em vez de daily
     await Notifications.scheduleNotificationAsync({
       content: {
         title: config.title,
@@ -219,7 +220,7 @@ export async function scheduleDailyNotification(
         },
       },
       trigger: {
-        seconds: secondsUntilNotification,
+        seconds: Math.max(secondsUntilNotification, 1),
       } as any,
     })
 
