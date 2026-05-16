@@ -36,6 +36,23 @@ export default function RootLayout() {
 
   const [insets, setInsets] = useState<EdgeInsets>(initialInsets);
   const [frame, setFrame] = useState<Rect>(initialFrame);
+  const [onboardingCompleted, setOnboardingCompleted] = useState<boolean | null>(null);
+
+  // Query to check onboarding status
+  const { data: onboardingStatus } = trpc.profile.checkOnboardingStatus.useQuery(
+    undefined,
+    {
+      enabled: isAuthenticated && !loading,
+      retry: 1,
+    }
+  );
+
+  // Update onboarding state when status is fetched
+  useEffect(() => {
+    if (onboardingStatus?.completed !== undefined) {
+      setOnboardingCompleted(onboardingStatus.completed);
+    }
+  }, [onboardingStatus]);
 
   // Initialize Manus runtime for cookie injection from parent container
   useEffect(() => {
@@ -91,15 +108,24 @@ export default function RootLayout() {
           {/* If a screen needs the native header, explicitly enable it and set a human title via Stack.Screen options. */}
           {/* in order for ios apps tab switching to work properly, use presentation: "fullScreenModal" for login page, whenever you decide to use presentation: "modal*/}
           <Stack screenOptions={{ headerShown: false }}>
-            {isAuthenticated ? (
-              <>
-                <Stack.Screen name="(tabs)" />
-                <Stack.Screen name="camera" options={{ presentation: "modal" }} />
-                <Stack.Screen name="photo-vault" options={{ presentation: "modal" }} />
-                <Stack.Screen name="exam-upload" options={{ presentation: "modal" }} />
-                <Stack.Screen name="privacy-panel" options={{ presentation: "modal" }} />
-                <Stack.Screen name="feed" options={{ presentation: "modal" }} />
-              </>
+            {isAuthenticated && !loading ? (
+              onboardingCompleted === null ? (
+                // Loading onboarding status - show nothing (will redirect when ready)
+                <Stack.Screen name="login" options={{ headerShown: false }} />
+              ) : onboardingCompleted ? (
+                // Onboarding completed - show main app
+                <>
+                  <Stack.Screen name="(tabs)" />
+                  <Stack.Screen name="camera" options={{ presentation: "modal" }} />
+                  <Stack.Screen name="photo-vault" options={{ presentation: "modal" }} />
+                  <Stack.Screen name="exam-upload" options={{ presentation: "modal" }} />
+                  <Stack.Screen name="privacy-panel" options={{ presentation: "modal" }} />
+                  <Stack.Screen name="feed" options={{ presentation: "modal" }} />
+                </>
+              ) : (
+                // Onboarding not completed - show onboarding
+                <Stack.Screen name="onboarding" options={{ headerShown: false }} />
+              )
             ) : (
               <Stack.Screen name="login" options={{ headerShown: false }} />
             )}
