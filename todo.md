@@ -267,6 +267,56 @@
 
 ---
 
+## Fase 1 Melhorada: Funcionalidades Essenciais (CONCLUÍDA)
+
+### Tela de Perfil
+- [x] Criar arquivo `app/(tabs)/profile.tsx`
+- [x] Exibir dados do usuário (nome, email, foto)
+- [x] Botão para editar perfil
+- [x] Histórico de atividades
+- [x] Estatísticas do usuário
+- [x] Integrar com API de perfil
+
+### Tela de Configurações
+- [x] Criar arquivo `app/settings.tsx`
+- [x] Seção de Perfil (editar nome, foto, tipo)
+- [x] Seção de Notificações (toggle)
+- [x] Seção de Privacidade
+- [x] Botão de Logout
+- [x] Botão de Reset de Onboarding
+- [x] Botão de Termos e Privacidade
+
+### Dashboard Completo
+- [x] Implementar Frase do Dia (backend)
+- [x] Implementar Ações Rápidas (botões funcionais)
+- [x] Adicionar Histórico de Atividades
+- [x] Adicionar Widgets de Progresso
+- [x] Integrar com API de dashboard
+- [x] Adicionar Pull-to-Refresh
+
+### Rotas e Navegação
+- [x] Adicionar tab de Perfil na tab bar
+- [x] Adicionar rota de Settings (modal)
+- [x] Adicionar rota de Editar Perfil (modal)
+- [x] Configurar navegação correta
+
+### Backend/API
+- [x] Criar endpoint `GET /profile` (dados do usuário)
+- [x] Criar endpoint `PUT /profile` (atualizar perfil)
+- [x] Criar endpoint `GET /dashboard` (dados do dashboard)
+- [x] Criar endpoint `GET /activities` (histórico)
+- [x] Criar endpoint `POST /logout` (logout)
+- [x] Criar endpoint `POST /reset-onboarding` (reset)
+
+### Testes
+- [x] Testes da Tela de Perfil
+- [x] Testes da Tela de Configurações
+- [x] Testes do Dashboard
+- [x] Testes de navegação
+- [x] Testes de integração com API
+
+---
+
 ## Fase 14: Marketplace de Profissionais
 
 ### Tela de Marketplace

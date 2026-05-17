@@ -48,14 +48,14 @@ export const profileRouter = router({
     }),
 
   /**
-   * Update profile
+   * Update student profile
    */
   updateProfile: protectedProcedure
     .input(
       z.object({
-        name: z.string().min(1).max(100).optional(),
-        bio: z.string().max(500).optional(),
-        avatarUrl: z.string().url().optional(),
+        name: z.string().optional(),
+        bio: z.string().optional(),
+        photo: z.string().optional(),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -75,26 +75,7 @@ export const profileRouter = router({
     }),
 
   /**
-   * Get profile statistics
-   */
-  getStats: protectedProcedure.query(async ({ ctx }) => {
-    try {
-      const student = await db.getStudentByUserId(ctx.user.id);
-      if (!student) {
-        throw new Error("Student profile not found");
-      }
-
-      return await profileService.getStudentStats(student.id);
-    } catch (error) {
-      console.error("[ProfileRouter] Error getting stats:", error);
-      throw new Error(
-        error instanceof Error ? error.message : "Failed to get stats"
-      );
-    }
-  }),
-
-  /**
-   * Get student badges
+   * Get student badges with details
    */
   getBadges: protectedProcedure.query(async ({ ctx }) => {
     try {
@@ -179,6 +160,90 @@ export const profileRouter = router({
       throw new Error(
         error instanceof Error ? error.message : "Failed to complete onboarding"
       );
+    }
+  }),
+
+  /**
+   * Get dashboard data (daily phrase, tip, stats)
+   */
+  getDashboard: protectedProcedure.query(async ({ ctx }) => {
+    try {
+      const student = await db.getStudentByUserId(ctx.user.id);
+      if (!student) {
+        throw new Error("Student profile not found");
+      }
+
+      const stats = await profileService.getStudentProfileWithStats(student.id);
+      
+      return {
+        dailyPhrase: "A consistência é a chave do sucesso",
+        dailyTip: "Mantenha a consistência! Capture fotos regularmente para acompanhar melhor seu progresso visual.",
+        stats: {
+          photosCount: stats?.stats.totalPhotos || 0,
+          examsCount: stats?.stats.totalExams || 0,
+          postsCount: stats?.stats.totalPosts || 0,
+          badgesCount: stats?.stats.totalBadges || 0,
+        },
+      };
+    } catch (error) {
+      console.error("[ProfileRouter] Error getting dashboard:", error);
+      return {
+        dailyPhrase: "A consistência é a chave do sucesso",
+        dailyTip: "Mantenha a consistência! Capture fotos regularmente para acompanhar melhor seu progresso visual.",
+        stats: {
+          photosCount: 0,
+          examsCount: 0,
+          postsCount: 0,
+          badgesCount: 0,
+        },
+      };
+    }
+  }),
+
+  /**
+   * Get recent activities
+   */
+  getRecentActivities: protectedProcedure.query(async ({ ctx }) => {
+    try {
+      const student = await db.getStudentByUserId(ctx.user.id);
+      if (!student) {
+        throw new Error("Student profile not found");
+      }
+
+      // TODO: Implement actual activity fetching from database
+      return [];
+    } catch (error) {
+      console.error("[ProfileRouter] Error getting activities:", error);
+      return [];
+    }
+  }),
+
+  /**
+   * Get statistics
+   */
+  getStats: protectedProcedure.query(async ({ ctx }) => {
+    try {
+      const student = await db.getStudentByUserId(ctx.user.id);
+      if (!student) {
+        throw new Error("Student profile not found");
+      }
+
+      const stats = await profileService.getStudentProfileWithStats(student.id);
+      
+      return {
+        activitiesCount: stats?.stats.totalPhotos || 0,
+        streakDays: 0, // TODO: Implement streak calculation
+        badgesCount: stats?.stats.totalBadges || 0,
+        recentActivities: [],
+      };
+    } catch (error) {
+      console.error("[ProfileRouter] Error getting stats:", error);
+      return {
+        activitiesCount: 0,
+        streakDays: 0,
+        badgesCount: 0,
+        recentActivities: [],
+      };
     }
   }),
 });
