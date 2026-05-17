@@ -235,6 +235,36 @@ export const subscriptions = mysqlTable("subscriptions", {
 });
 
 /**
+ * Routines Table
+ * Daily routines for students
+ */
+export const routines = mysqlTable("routines", {
+  id: int("id").autoincrement().primaryKey(),
+  studentId: int("studentId").notNull(),
+  title: varchar("title", { length: 255 }).notNull(),
+  description: text("description"),
+  time: varchar("time", { length: 5 }), // HH:MM format
+  frequency: mysqlEnum("frequency", ["daily", "weekdays", "weekends", "custom"]).default("daily").notNull(),
+  isActive: boolean("isActive").default(true).notNull(),
+  reminderEnabled: boolean("reminderEnabled").default(true).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+/**
+ * Routine Completions Table
+ * Track daily routine completions
+ */
+export const routineCompletions = mysqlTable("routineCompletions", {
+  id: int("id").autoincrement().primaryKey(),
+  routineId: int("routineId").notNull(),
+  studentId: int("studentId").notNull(),
+  completedAt: timestamp("completedAt").defaultNow().notNull(),
+  notes: text("notes"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+/**
  * Notifications Table
  * Push notifications and in-app notifications
  */
@@ -291,3 +321,9 @@ export type InsertSubscription = typeof subscriptions.$inferInsert;
 
 export type Notification = typeof notifications.$inferSelect;
 export type InsertNotification = typeof notifications.$inferInsert;
+
+export type Routine = typeof routines.$inferSelect;
+export type InsertRoutine = typeof routines.$inferInsert;
+
+export type RoutineCompletion = typeof routineCompletions.$inferSelect;
+export type InsertRoutineCompletion = typeof routineCompletions.$inferInsert;

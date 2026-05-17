@@ -345,3 +345,55 @@
 - [x] Enviar notificação ao profissional
 - [x] Criar chat ou mensagens
 - [x] Exibir status de conexão
+
+
+---
+
+## Fase 2: Sistema de Rotinas Diárias (CONCLUÍDA)
+
+### Schema de Banco de Dados
+- [x] Criar tabela `routines` com campos: id, studentId, title, description, time, frequency, isActive, createdAt, updatedAt
+- [x] Criar tabela `routine_completions` para rastrear conclusões diárias
+- [x] Adicionar índices para queries otimizadas
+
+### Endpoints Backend
+- [x] `POST /routines` — Criar nova rotina
+- [x] `GET /routines` — Listar rotinas do usuário
+- [x] `GET /routines/:id` — Obter detalhes de uma rotina
+- [x] `PUT /routines/:id` — Atualizar rotina
+- [x] `DELETE /routines/:id` — Deletar rotina
+- [x] `POST /routines/:id/complete` — Marcar como concluída
+- [x] `GET /routines/completions/today` — Obter conclusões do dia
+
+### Tela de Rotinas
+- [x] Criar arquivo `app/(tabs)/routines.tsx`
+- [x] Exibir listagem de rotinas
+- [x] Mostrar status de conclusão (concluída/pendente)
+- [x] Implementar pull-to-refresh
+- [x] Adicionar botão flutuante para criar nova rotina
+- [x] Implementar swipe para deletar/editar
+
+### Modal de Adicionar/Editar
+- [x] Criar componente modal reutilizável
+- [x] Campos: título, descrição, horário, frequência
+- [x] Validação de formulário
+- [x] Modo edição vs criação
+- [x] Salvar e cancelar
+
+### Funcionalidade de Deletar
+- [x] Implementar confirmação antes de deletar
+- [x] Animação de remoção da lista
+- [x] Feedback háptico
+- [x] Undo (opcional)
+
+### Testes
+- [x] Testes de CRUD de rotinas
+- [x] Testes de validação de formulário
+- [x] Testes de listagem e filtros
+- [x] Testes de conclusão de rotinas
+- [x] Testes de integração com API
+
+### Documentação
+- [x] Documentar schema de rotinas
+- [x] Documentar endpoints
+- [x] Criar guia de uso
