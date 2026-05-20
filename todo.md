@@ -397,3 +397,78 @@
 - [x] Documentar schema de rotinas
 - [x] Documentar endpoints
 - [x] Criar guia de uso
+
+
+---
+
+## Fase 3: Integração de Dados de Saúde e Bem-estar (ATUAL)
+
+### Schema de Banco de Dados
+- [ ] Criar tabela `health_metrics` (tipo, valor, unidade, fonte, data)
+- [ ] Criar tabela `health_integrations` (provider, tokens, status)
+- [ ] Criar tabela `professional_notes` (notas de profissionais)
+- [ ] Criar tabela `health_goals` (metas de saúde personalizadas)
+- [ ] Adicionar índices para queries otimizadas
+
+### Integração com APIs
+- [ ] Implementar Google Fit API (OAuth, busca de dados)
+- [ ] Implementar Apple HealthKit (permissões, leitura de dados)
+- [ ] Implementar Fitbit API (opcional)
+- [ ] Criar serviço de sincronização automática
+- [ ] Adicionar tratamento de erros e retry logic
+
+### Endpoints tRPC
+- [ ] `POST /health/metrics` — Adicionar métrica manual
+- [ ] `GET /health/metrics` — Listar métricas do período
+- [ ] `GET /health/summary` — Resumo de saúde
+- [ ] `POST /health/integrations/connect` — Conectar API
+- [ ] `GET /health/integrations` — Listar integrações ativas
+- [ ] `DELETE /health/integrations/:id` — Desconectar API
+- [ ] `GET /health/insights` — Gerar insights automáticos
+
+### Tela de Saúde no App
+- [ ] Criar arquivo `app/(tabs)/health.tsx`
+- [ ] Exibir métricas principais (passos, frequência cardíaca, sono)
+- [ ] Gráficos de progresso (últimos 7 dias)
+- [ ] Seção de insights e recomendações
+- [ ] Botão para conectar wearables
+- [ ] Pull-to-refresh para sincronizar dados
+
+### Dashboard para Profissionais
+- [ ] Criar arquivo `app/professional/clients.tsx`
+- [ ] Listar clientes do profissional
+- [ ] Visualizar métricas de cada cliente
+- [ ] Adicionar notas e recomendações
+- [ ] Gráficos de progresso
+- [ ] Exportar relatórios em PDF
+
+### Análise de Dados
+- [ ] Implementar calculadora de métricas diárias
+- [ ] Criar gerador de insights automáticos
+- [ ] Implementar detecção de anomalias
+- [ ] Calcular tendências e progressão
+- [ ] Gerar recomendações personalizadas
+
+### Segurança e Compliance
+- [ ] Implementar criptografia AES-256
+- [ ] Adicionar auditoria HIPAA (logs)
+- [ ] Configurar RBAC (Role-based access control)
+- [ ] Implementar rate limiting
+- [ ] Adicionar validação de dados sensíveis
+- [ ] Documentar conformidade LGPD/GDPR
+
+### Testes
+- [ ] Testes de integração com APIs
+- [ ] Testes de criptografia de dados
+- [ ] Testes de endpoints tRPC
+- [ ] Testes de tela de saúde
+- [ ] Testes de dashboard para profissionais
+- [ ] Testes de segurança HIPAA
+
+### Documentação
+- [ ] Documentar schema de banco de dados
+- [ ] Documentar APIs de integração
+- [ ] Criar guia de implementação
+- [ ] Documentar endpoints tRPC
+- [ ] Criar guia de segurança
+- [ ] Documentar conformidade HIPAA
