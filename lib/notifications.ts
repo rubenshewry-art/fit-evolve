@@ -1,4 +1,3 @@
-import * as Notifications from 'expo-notifications'
 import { Platform } from 'react-native'
 
 /**
@@ -21,100 +20,122 @@ const notificationConfig: Record<
   {
     title: string
     sound: string
-    priority: Notifications.AndroidNotificationPriority
+    priority: string
     color?: string
   }
 > = {
   professional_tagged: {
     title: 'Você foi marcado!',
     sound: 'notification_tagged.wav',
-    priority: Notifications.AndroidNotificationPriority.HIGH,
+    priority: 'HIGH',
     color: '#0a7ea4',
   },
   badge_unlocked: {
     title: '🏆 Badge Conquistada!',
     sound: 'notification_badge.wav',
-    priority: Notifications.AndroidNotificationPriority.HIGH,
+    priority: 'HIGH',
     color: '#22C55E',
   },
   new_comment: {
     title: 'Novo comentário',
     sound: 'notification_comment.wav',
-    priority: Notifications.AndroidNotificationPriority.DEFAULT,
+    priority: 'DEFAULT',
     color: '#0a7ea4',
   },
   new_message: {
     title: 'Nova mensagem',
     sound: 'notification_message.wav',
-    priority: Notifications.AndroidNotificationPriority.HIGH,
+    priority: 'HIGH',
     color: '#0a7ea4',
   },
   exam_analyzed: {
     title: 'Exame analisado',
     sound: 'notification_exam.wav',
-    priority: Notifications.AndroidNotificationPriority.DEFAULT,
+    priority: 'DEFAULT',
     color: '#0a7ea4',
   },
   daily_tip: {
     title: 'Dica do dia',
     sound: 'notification_tip.wav',
-    priority: Notifications.AndroidNotificationPriority.LOW,
+    priority: 'LOW',
     color: '#0a7ea4',
   },
   reminder: {
     title: 'Lembrete',
     sound: 'notification_reminder.wav',
-    priority: Notifications.AndroidNotificationPriority.DEFAULT,
+    priority: 'DEFAULT',
     color: '#0a7ea4',
   },
+}
+
+// Lazy load expo-notifications only when needed (not in Expo Go)
+let Notifications: any = null
+
+async function loadNotifications() {
+  if (Notifications) return Notifications
+  
+  try {
+    Notifications = await import('expo-notifications')
+    return Notifications
+  } catch (error) {
+    console.warn('[Notifications] expo-notifications não disponível (Expo Go SDK 53+)')
+    return null
+  }
 }
 
 /**
  * Inicializar notificações
  */
 export async function initializeNotifications() {
-  // Configurar comportamento padrão
-  Notifications.setNotificationHandler({
-    handleNotification: async () => ({
-      shouldShowAlert: true,
-      shouldPlaySound: true,
-      shouldSetBadge: true,
-      shouldShowBanner: true,
-      shouldShowList: true,
-    } as any),
-  })
+  try {
+    const NotificationsModule = await loadNotifications()
+    if (!NotificationsModule) return
 
-  // Solicitar permissão (iOS)
-  if (Platform.OS === 'ios') {
-    const { status } = await Notifications.requestPermissionsAsync()
-    if (status !== 'granted') {
-      console.warn('[Notifications] Permissão negada no iOS')
+    // Configurar comportamento padrão
+    NotificationsModule.setNotificationHandler({
+      handleNotification: async () => ({
+        shouldShowAlert: true,
+        shouldPlaySound: true,
+        shouldSetBadge: true,
+        shouldShowBanner: true,
+        shouldShowList: true,
+      } as any),
+    })
+
+    // Solicitar permissão (iOS)
+    if (Platform.OS === 'ios') {
+      const { status } = await NotificationsModule.requestPermissionsAsync()
+      if (status !== 'granted') {
+        console.warn('[Notifications] Permissão negada no iOS')
+      }
     }
-  }
 
-  // Android: criar canal de notificação
-  if (Platform.OS === 'android') {
-    await Notifications.setNotificationChannelAsync('default', {
-      name: 'default',
-      importance: Notifications.AndroidImportance.MAX,
-      vibrationPattern: [0, 250, 250, 250],
-      lightColor: '#0a7ea4',
-    })
+    // Android: criar canal de notificação
+    if (Platform.OS === 'android') {
+      await NotificationsModule.setNotificationChannelAsync('default', {
+        name: 'default',
+        importance: 5, // MAX
+        vibrationPattern: [0, 250, 250, 250],
+        lightColor: '#0a7ea4',
+      })
 
-    // Canais específicos por tipo
-    await Notifications.setNotificationChannelAsync('high-priority', {
-      name: 'Alta Prioridade',
-      importance: Notifications.AndroidImportance.MAX,
-      vibrationPattern: [0, 250, 250, 250],
-      lightColor: '#22C55E',
-    })
+      // Canais específicos por tipo
+      await NotificationsModule.setNotificationChannelAsync('high-priority', {
+        name: 'Alta Prioridade',
+        importance: 5, // MAX
+        vibrationPattern: [0, 250, 250, 250],
+        lightColor: '#22C55E',
+      })
 
-    await Notifications.setNotificationChannelAsync('messages', {
-      name: 'Mensagens',
-      importance: Notifications.AndroidImportance.HIGH,
-      vibrationPattern: [0, 200, 200, 200],
-      lightColor: '#0a7ea4',
-    })
+      await NotificationsModule.setNotificationChannelAsync('messages', {
+        name: 'Mensagens',
+        importance: 4, // HIGH
+        vibrationPattern: [0, 200, 200, 200],
+        lightColor: '#0a7ea4',
+      })
+    }
+  } catch (error) {
+    console.warn('[Notifications] Erro ao inicializar notificações:', error)
   }
 }
 
@@ -126,10 +147,16 @@ export async function sendLocalNotification(
   body: string,
   data?: Record<string, any>
 ) {
-  const config = notificationConfig[type]
-
   try {
-    await Notifications.scheduleNotificationAsync({
+    const NotificationsModule = await loadNotifications()
+    if (!NotificationsModule) {
+      console.log(`[Notifications] Notificação simulada (Expo Go): ${type} - ${body}`)
+      return
+    }
+
+    const config = notificationConfig[type]
+
+    await NotificationsModule.scheduleNotificationAsync({
       content: {
         title: config.title,
         body,
@@ -146,7 +173,7 @@ export async function sendLocalNotification(
 
     console.log(`[Notifications] Notificação enviada: ${type}`)
   } catch (error) {
-    console.error('[Notifications] Erro ao enviar notificação:', error)
+    console.warn('[Notifications] Erro ao enviar notificação:', error)
   }
 }
 
@@ -159,10 +186,16 @@ export async function scheduleNotification(
   delaySeconds: number,
   data?: Record<string, any>
 ) {
-  const config = notificationConfig[type]
-
   try {
-    await Notifications.scheduleNotificationAsync({
+    const NotificationsModule = await loadNotifications()
+    if (!NotificationsModule) {
+      console.log(`[Notifications] Notificação agendada simulada (Expo Go): ${type}`)
+      return
+    }
+
+    const config = notificationConfig[type]
+
+    await NotificationsModule.scheduleNotificationAsync({
       content: {
         title: config.title,
         body,
@@ -179,7 +212,7 @@ export async function scheduleNotification(
 
     console.log(`[Notifications] Notificação agendada: ${type}`)
   } catch (error) {
-    console.error('[Notifications] Erro ao agendar notificação:', error)
+    console.warn('[Notifications] Erro ao agendar notificação:', error)
   }
 }
 
@@ -192,9 +225,15 @@ export async function scheduleDailyNotification(
   hour: number = 8,
   minute: number = 0
 ) {
-  const config = notificationConfig[type]
-
   try {
+    const NotificationsModule = await loadNotifications()
+    if (!NotificationsModule) {
+      console.log(`[Notifications] Notificação diária simulada (Expo Go): ${type}`)
+      return
+    }
+
+    const config = notificationConfig[type]
+
     // Calcular próxima ocorrência
     const now = new Date()
     const scheduledTime = new Date()
@@ -210,7 +249,7 @@ export async function scheduleDailyNotification(
     )
 
     // Usar trigger de segundos em vez de daily
-    await Notifications.scheduleNotificationAsync({
+    await NotificationsModule.scheduleNotificationAsync({
       content: {
         title: config.title,
         body,
@@ -226,7 +265,7 @@ export async function scheduleDailyNotification(
 
     console.log(`[Notifications] Notificação diária agendada: ${type}`)
   } catch (error) {
-    console.error('[Notifications] Erro ao agendar notificação diária:', error)
+    console.warn('[Notifications] Erro ao agendar notificação diária:', error)
   }
 }
 
@@ -235,10 +274,13 @@ export async function scheduleDailyNotification(
  */
 export async function cancelAllNotifications() {
   try {
-    await Notifications.cancelAllScheduledNotificationsAsync()
+    const NotificationsModule = await loadNotifications()
+    if (!NotificationsModule) return
+
+    await NotificationsModule.cancelAllScheduledNotificationsAsync()
     console.log('[Notifications] Todas as notificações canceladas')
   } catch (error) {
-    console.error('[Notifications] Erro ao cancelar notificações:', error)
+    console.warn('[Notifications] Erro ao cancelar notificações:', error)
   }
 }
 
@@ -246,27 +288,37 @@ export async function cancelAllNotifications() {
  * Hook para escutar notificações
  */
 export function useNotificationListener(
-  callback: (notification: Notifications.Notification) => void
+  callback: (notification: any) => void
 ) {
-  // Listener para notificações recebidas enquanto app está aberto
-  const subscription = Notifications.addNotificationReceivedListener((notification) => {
-    console.log('[Notifications] Notificação recebida:', notification)
-    callback(notification)
-  })
+  return async () => {
+    try {
+      const NotificationsModule = await loadNotifications()
+      if (!NotificationsModule) return () => {}
 
-  // Listener para notificações clicadas
-  const responseSubscription = Notifications.addNotificationResponseReceivedListener(
-    (response) => {
-      console.log('[Notifications] Notificação clicada:', response)
-      // Aqui você pode navegar para a tela apropriada baseado no tipo
-      const type = response.notification.request.content.data.type as NotificationType
-      handleNotificationClick(type, response.notification.request.content.data)
+      // Listener para notificações recebidas enquanto app está aberto
+      const subscription = NotificationsModule.addNotificationReceivedListener((notification: any) => {
+        console.log('[Notifications] Notificação recebida:', notification)
+        callback(notification)
+      })
+
+      // Listener para notificações clicadas
+      const responseSubscription = NotificationsModule.addNotificationResponseReceivedListener(
+        (response: any) => {
+          console.log('[Notifications] Notificação clicada:', response)
+          // Aqui você pode navegar para a tela apropriada baseado no tipo
+          const type = response.notification.request.content.data.type as NotificationType
+          handleNotificationClick(type, response.notification.request.content.data)
+        }
+      )
+
+      return () => {
+        subscription.remove()
+        responseSubscription.remove()
+      }
+    } catch (error) {
+      console.warn('[Notifications] Erro ao configurar listeners:', error)
+      return () => {}
     }
-  )
-
-  return () => {
-    subscription.remove()
-    responseSubscription.remove()
   }
 }
 
@@ -296,6 +348,35 @@ function handleNotificationClick(type: NotificationType, data: Record<string, an
       break
     default:
       console.log('[Notifications] Tipo de notificação desconhecido:', type)
+  }
+}
+
+/**
+ * Solicitar permissão de notificações (lazy loaded para Expo Go)
+ */
+export async function requestNotificationPermissions() {
+  try {
+    const NotificationsModule = await loadNotifications()
+    if (!NotificationsModule) {
+      console.log('[Notifications] Permissão de notificações simulada (Expo Go)')
+      return
+    }
+
+    if (Platform.OS === 'ios') {
+      const { status } = await NotificationsModule.requestPermissionsAsync({
+        ios: {
+          allowAlert: true,
+          allowBadge: true,
+          allowSound: true,
+        },
+      })
+      console.log('[Notifications] Status de permissão iOS:', status)
+    } else if (Platform.OS === 'android') {
+      // Android 13+ requer permissão em tempo de execução
+      console.log('[Notifications] Permissão Android solicitada')
+    }
+  } catch (error) {
+    console.warn('[Notifications] Erro ao solicitar permissão:', error)
   }
 }
 

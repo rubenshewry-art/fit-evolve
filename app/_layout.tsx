@@ -1,4 +1,3 @@
-import "@/global.css";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
@@ -31,18 +30,13 @@ export const unstable_settings = {
   anchor: "(tabs)",
 };
 
-export default function RootLayout() {
+// Child component that uses tRPC (inside provider)
+function RootLayoutContent() {
   const { isAuthenticated, loading } = useAuth();
-  useNotifications();
-  const initialInsets = initialWindowMetrics?.insets ?? DEFAULT_WEB_INSETS;
-  const initialFrame = initialWindowMetrics?.frame ?? DEFAULT_WEB_FRAME;
-
-  const [insets, setInsets] = useState<EdgeInsets>(initialInsets);
-  const [frame, setFrame] = useState<Rect>(initialFrame);
   const [onboardingCompleted, setOnboardingCompleted] = useState<boolean | null>(null);
   const [previousRoute, setPreviousRoute] = useState<string | null>(null);
 
-  // Query to check onboarding status
+  // Query to check onboarding status (now inside provider)
   const { data: onboardingStatus } = trpc.profile.checkOnboardingStatus.useQuery(
     undefined,
     {
@@ -57,6 +51,94 @@ export default function RootLayout() {
       setOnboardingCompleted(onboardingStatus.completed);
     }
   }, [onboardingStatus]);
+
+  // Determine current route for transition animation
+  const currentRoute = useMemo(() => {
+    if (!isAuthenticated && !loading) {
+      return 'login';
+    } else if (isAuthenticated && !loading) {
+      if (onboardingCompleted === null) {
+        return 'loading';
+      } else if (onboardingCompleted) {
+        return '(tabs)';
+      } else {
+        return 'onboarding';
+      }
+    }
+    return 'loading';
+  }, [isAuthenticated, loading, onboardingCompleted]);
+
+  // Update previous route for transition animation
+  useEffect(() => {
+    if (currentRoute !== 'loading' && previousRoute !== currentRoute) {
+      setPreviousRoute(currentRoute);
+    }
+  }, [currentRoute, previousRoute]);
+
+  return (
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      {/* Loading indicator overlay during onboarding status check */}
+      {isAuthenticated && !loading && onboardingCompleted === null && (
+        <TransitionView
+          transitionType="fade"
+          duration={300}
+          visible={true}
+          style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, zIndex: 999 }}
+        >
+          <View style={{ flex: 1, backgroundColor: 'white' }}>
+            <LoadingIndicator
+              size={60}
+              text="Preparando app..."
+              visible={true}
+            />
+          </View>
+        </TransitionView>
+      )}
+
+      {/* Main stack with transitions */}
+      <TransitionView
+        transitionType="fade"
+        duration={400}
+        visible={!(isAuthenticated && !loading && onboardingCompleted === null)}
+      >
+        <Stack screenOptions={{ headerShown: false }}>
+          {isAuthenticated && !loading ? (
+            onboardingCompleted === null ? (
+              // Loading onboarding status - show nothing (will redirect when ready)
+              <Stack.Screen name="login" options={{ headerShown: false }} />
+            ) : onboardingCompleted ? (
+              // Onboarding completed - show main app
+              <>
+                <Stack.Screen name="(tabs)" />
+                <Stack.Screen name="camera" options={{ presentation: "modal" }} />
+                <Stack.Screen name="photo-vault" options={{ presentation: "modal" }} />
+                <Stack.Screen name="exam-upload" options={{ presentation: "modal" }} />
+                <Stack.Screen name="privacy-panel" options={{ presentation: "modal" }} />
+                <Stack.Screen name="feed" options={{ presentation: "modal" }} />
+              </>
+            ) : (
+              // Onboarding not completed - show onboarding
+              <Stack.Screen name="onboarding" options={{ headerShown: false }} />
+            )
+          ) : (
+            <Stack.Screen name="login" options={{ headerShown: false }} />
+          )}
+          <Stack.Screen name="oauth/callback" />
+        </Stack>
+      </TransitionView>
+
+      <StatusBar style="auto" />
+    </GestureHandlerRootView>
+  );
+}
+
+export default function RootLayout() {
+  useNotifications();
+  const initialInsets = initialWindowMetrics?.insets ?? DEFAULT_WEB_INSETS;
+  const initialFrame = initialWindowMetrics?.frame ?? DEFAULT_WEB_FRAME;
+
+  const [insets, setInsets] = useState<EdgeInsets>(initialInsets);
+  const [frame, setFrame] = useState<Rect>(initialFrame);
 
   // Initialize Manus runtime for cookie injection from parent container
   useEffect(() => {
@@ -104,87 +186,12 @@ export default function RootLayout() {
     };
   }, [initialInsets, initialFrame]);
 
-  // Determine current route for transition animation
-  const currentRoute = useMemo(() => {
-    if (!isAuthenticated && !loading) {
-      return 'login';
-    } else if (isAuthenticated && !loading) {
-      if (onboardingCompleted === null) {
-        return 'loading';
-      } else if (onboardingCompleted) {
-        return '(tabs)';
-      } else {
-        return 'onboarding';
-      }
-    }
-    return 'loading';
-  }, [isAuthenticated, loading, onboardingCompleted]);
-
-  // Update previous route for transition animation
-  useEffect(() => {
-    if (currentRoute !== 'loading' && previousRoute !== currentRoute) {
-      setPreviousRoute(currentRoute);
-    }
-  }, [currentRoute, previousRoute]);
-
   const content = (
-    <GestureHandlerRootView style={{ flex: 1 }}>
-      <trpc.Provider client={trpcClient} queryClient={queryClient}>
-        <QueryClientProvider client={queryClient}>
-          {/* Loading indicator overlay during onboarding status check */}
-          {isAuthenticated && !loading && onboardingCompleted === null && (
-            <TransitionView
-              transitionType="fade"
-              duration={300}
-              visible={true}
-              style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, zIndex: 999 }}
-            >
-              <View style={{ flex: 1, backgroundColor: 'white' }}>
-                <LoadingIndicator
-                  size={60}
-                  text="Preparando app..."
-                  visible={true}
-                />
-              </View>
-            </TransitionView>
-          )}
-
-          {/* Main stack with transitions */}
-          <TransitionView
-            transitionType="fade"
-            duration={400}
-            visible={!(isAuthenticated && !loading && onboardingCompleted === null)}
-          >
-            <Stack screenOptions={{ headerShown: false }}>
-              {isAuthenticated && !loading ? (
-                onboardingCompleted === null ? (
-                  // Loading onboarding status - show nothing (will redirect when ready)
-                  <Stack.Screen name="login" options={{ headerShown: false }} />
-                ) : onboardingCompleted ? (
-                  // Onboarding completed - show main app
-                  <>
-                    <Stack.Screen name="(tabs)" />
-                    <Stack.Screen name="camera" options={{ presentation: "modal" }} />
-                    <Stack.Screen name="photo-vault" options={{ presentation: "modal" }} />
-                    <Stack.Screen name="exam-upload" options={{ presentation: "modal" }} />
-                    <Stack.Screen name="privacy-panel" options={{ presentation: "modal" }} />
-                    <Stack.Screen name="feed" options={{ presentation: "modal" }} />
-                  </>
-                ) : (
-                  // Onboarding not completed - show onboarding
-                  <Stack.Screen name="onboarding" options={{ headerShown: false }} />
-                )
-              ) : (
-                <Stack.Screen name="login" options={{ headerShown: false }} />
-              )}
-              <Stack.Screen name="oauth/callback" />
-            </Stack>
-          </TransitionView>
-
-          <StatusBar style="auto" />
-        </QueryClientProvider>
-      </trpc.Provider>
-    </GestureHandlerRootView>
+    <trpc.Provider client={trpcClient} queryClient={queryClient}>
+      <QueryClientProvider client={queryClient}>
+        <RootLayoutContent />
+      </QueryClientProvider>
+    </trpc.Provider>
   );
 
   const shouldOverrideSafeArea = Platform.OS === "web";

@@ -28,16 +28,28 @@ export function useNotifications() {
     }
   }, [])
 
-  // Escutar notificações (apenas em development build)
   useEffect(() => {
-    try {
-      const unsubscribe = useNotificationListener((notification) => {
-        console.log('[useNotifications] Notificação recebida:', notification)
-      })
-      return unsubscribe
-    } catch (error) {
-      // Ignorar erro se estiver no Expo Go
-      return () => {}
+    // Escutar notificações (apenas em development build)
+    let unsubscribe: (() => void) | null = null
+    
+    const setupListener = async () => {
+      try {
+        const setupFn = useNotificationListener((notification) => {
+          console.log('[useNotifications] Notificação recebida:', notification)
+        })
+        unsubscribe = await setupFn()
+      } catch (error) {
+        // Ignorar erro se estiver no Expo Go
+        console.warn('[useNotifications] Erro ao configurar listener:', error)
+      }
+    }
+    
+    setupListener()
+    
+    return () => {
+      if (unsubscribe) {
+        unsubscribe()
+      }
     }
   }, [])
 

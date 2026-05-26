@@ -15,7 +15,7 @@ import { useColors } from "@/hooks/use-colors";
 import { trpc } from "@/lib/trpc";
 import * as Haptics from "expo-haptics";
 import * as ImagePicker from "expo-image-picker";
-import * as Notifications from "expo-notifications";
+import { requestNotificationPermissions } from "@/lib/notifications";
 
 const { width } = Dimensions.get("window");
 
@@ -75,15 +75,9 @@ export default function OnboardingScreen() {
       const mediaStatus = await ImagePicker.requestMediaLibraryPermissionsAsync();
       console.log("Media library permission:", mediaStatus.status);
 
-      // Request notification permission
-      const notificationStatus = await Notifications.requestPermissionsAsync({
-        ios: {
-          allowAlert: true,
-          allowBadge: true,
-          allowSound: true,
-        },
-      });
-      console.log("Notification permission:", notificationStatus.status);
+      // Request notification permission (lazy loaded to avoid Expo Go crash)
+      await requestNotificationPermissions();
+      console.log("Notification permission: requested");
 
       // Update user profile with onboarding completed
       if (userType) {
