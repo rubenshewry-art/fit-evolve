@@ -108,7 +108,7 @@ export default function HomeScreen() {
           >
             <Text className="text-sm font-semibold text-background opacity-80">Frase do Dia</Text>
             <Text className="text-lg font-bold text-background leading-relaxed">
-              "{dailyPhrase}"
+              {'"'}{dailyPhrase}{'"'}
             </Text>
             <TouchableOpacity className="mt-2 flex-row items-center gap-2">
               <Ionicons name="share-social" size={16} color={colors.background} />

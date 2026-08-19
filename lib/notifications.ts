@@ -26,43 +26,43 @@ const notificationConfig: Record<
 > = {
   professional_tagged: {
     title: 'Você foi marcado!',
-    sound: 'notification_tagged.wav',
+    sound: 'default',
     priority: 'HIGH',
     color: '#0a7ea4',
   },
   badge_unlocked: {
     title: '🏆 Badge Conquistada!',
-    sound: 'notification_badge.wav',
+    sound: 'default',
     priority: 'HIGH',
     color: '#22C55E',
   },
   new_comment: {
     title: 'Novo comentário',
-    sound: 'notification_comment.wav',
+    sound: 'default',
     priority: 'DEFAULT',
     color: '#0a7ea4',
   },
   new_message: {
     title: 'Nova mensagem',
-    sound: 'notification_message.wav',
+    sound: 'default',
     priority: 'HIGH',
     color: '#0a7ea4',
   },
   exam_analyzed: {
     title: 'Exame analisado',
-    sound: 'notification_exam.wav',
+    sound: 'default',
     priority: 'DEFAULT',
     color: '#0a7ea4',
   },
   daily_tip: {
     title: 'Dica do dia',
-    sound: 'notification_tip.wav',
+    sound: 'default',
     priority: 'LOW',
     color: '#0a7ea4',
   },
   reminder: {
     title: 'Lembrete',
-    sound: 'notification_reminder.wav',
+    sound: 'default',
     priority: 'DEFAULT',
     color: '#0a7ea4',
   },
@@ -73,7 +73,11 @@ let Notifications: any = null
 
 async function loadNotifications() {
   if (Notifications) return Notifications
-  
+  if (Platform.OS === 'web') return null
+
+  // O módulo só é resolvido em runtime. Se o cliente não expuser a API nativa,
+  // o import falha e o restante do app continua funcionando em modo simulado.
+
   try {
     Notifications = await import('expo-notifications')
     return Notifications
@@ -89,7 +93,7 @@ async function loadNotifications() {
 export async function initializeNotifications() {
   try {
     const NotificationsModule = await loadNotifications()
-    if (!NotificationsModule) return
+    if (!NotificationsModule || typeof NotificationsModule.setNotificationHandler !== 'function') return
 
     // Configurar comportamento padrão
     NotificationsModule.setNotificationHandler({
@@ -149,7 +153,7 @@ export async function sendLocalNotification(
 ) {
   try {
     const NotificationsModule = await loadNotifications()
-    if (!NotificationsModule) {
+    if (!NotificationsModule || typeof NotificationsModule.scheduleNotificationAsync !== 'function') {
       console.log(`[Notifications] Notificação simulada (Expo Go): ${type} - ${body}`)
       return
     }
@@ -188,7 +192,7 @@ export async function scheduleNotification(
 ) {
   try {
     const NotificationsModule = await loadNotifications()
-    if (!NotificationsModule) {
+    if (!NotificationsModule || typeof NotificationsModule.scheduleNotificationAsync !== 'function') {
       console.log(`[Notifications] Notificação agendada simulada (Expo Go): ${type}`)
       return
     }
@@ -227,7 +231,7 @@ export async function scheduleDailyNotification(
 ) {
   try {
     const NotificationsModule = await loadNotifications()
-    if (!NotificationsModule) {
+    if (!NotificationsModule || typeof NotificationsModule.scheduleNotificationAsync !== 'function') {
       console.log(`[Notifications] Notificação diária simulada (Expo Go): ${type}`)
       return
     }
@@ -275,7 +279,7 @@ export async function scheduleDailyNotification(
 export async function cancelAllNotifications() {
   try {
     const NotificationsModule = await loadNotifications()
-    if (!NotificationsModule) return
+    if (!NotificationsModule || typeof NotificationsModule.cancelAllScheduledNotificationsAsync !== 'function') return
 
     await NotificationsModule.cancelAllScheduledNotificationsAsync()
     console.log('[Notifications] Todas as notificações canceladas')
@@ -293,7 +297,11 @@ export function useNotificationListener(
   return async () => {
     try {
       const NotificationsModule = await loadNotifications()
-      if (!NotificationsModule) return () => {}
+      if (
+        !NotificationsModule ||
+        typeof NotificationsModule.addNotificationReceivedListener !== 'function' ||
+        typeof NotificationsModule.addNotificationResponseReceivedListener !== 'function'
+      ) return () => {}
 
       // Listener para notificações recebidas enquanto app está aberto
       const subscription = NotificationsModule.addNotificationReceivedListener((notification: any) => {
@@ -357,24 +365,31 @@ function handleNotificationClick(type: NotificationType, data: Record<string, an
 export async function requestNotificationPermissions() {
   try {
     const NotificationsModule = await loadNotifications()
-    if (!NotificationsModule) {
+    if (!NotificationsModule || typeof NotificationsModule.requestPermissionsAsync !== 'function') {
       console.log('[Notifications] Permissão de notificações simulada (Expo Go)')
       return
     }
 
-    if (Platform.OS === 'ios') {
-      const { status } = await NotificationsModule.requestPermissionsAsync({
-        ios: {
-          allowAlert: true,
-          allowBadge: true,
-          allowSound: true,
-        },
-      })
-      console.log('[Notifications] Status de permissão iOS:', status)
-    } else if (Platform.OS === 'android') {
-      // Android 13+ requer permissão em tempo de execução
-      console.log('[Notifications] Permissão Android solicitada')
+    const existing = typeof NotificationsModule.getPermissionsAsync === 'function'
+      ? await NotificationsModule.getPermissionsAsync()
+      : null
+
+    if (existing?.status === 'granted') {
+      console.log('[Notifications] Permissão já concedida:', existing.status)
+      return
     }
+
+    const permissionResult = Platform.OS === 'ios'
+      ? await NotificationsModule.requestPermissionsAsync({
+          ios: {
+            allowAlert: true,
+            allowBadge: true,
+            allowSound: true,
+          },
+        })
+      : await NotificationsModule.requestPermissionsAsync()
+
+    console.log('[Notifications] Status de permissão:', permissionResult?.status ?? 'unknown')
   } catch (error) {
     console.warn('[Notifications] Erro ao solicitar permissão:', error)
   }

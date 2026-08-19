@@ -6,9 +6,7 @@ import Animated, {
   withTiming,
   withSpring,
   interpolate,
-  Extrapolate,
 } from 'react-native-reanimated'
-import type { SharedValue } from 'react-native-reanimated'
 import { useColors } from '@/hooks/use-colors'
 import * as Haptics from 'expo-haptics'
 
@@ -26,7 +24,8 @@ interface AnimatedChartProps {
 }
 
 /**
- * Gráfico de barras animado com feedback visual
+ * Gráfico de barras animado com feedback visual.
+ * Cada item possui seu próprio componente para manter as regras de hooks válidas.
  */
 export function AnimatedBarChart({
   data,
@@ -35,19 +34,6 @@ export function AnimatedBarChart({
   onDataPointPress,
 }: AnimatedChartProps) {
   const colors = useColors()
-  const animationValues = data.map(() => useSharedValue(0))
-
-  useEffect(() => {
-    animationValues.forEach((value, index) => {
-      setTimeout(() => {
-        value.value = withSpring(data[index].value / maxValue, {
-          damping: 8,
-          mass: 1,
-          overshootClamping: false,
-        })
-      }, index * 100)
-    })
-  }, [data, animationValues, maxValue])
 
   return (
     <View
@@ -73,9 +59,9 @@ export function AnimatedBarChart({
       <View style={{ flexDirection: 'row', alignItems: 'flex-end', gap: 8 }}>
         {data.map((point, index) => (
           <BarItem
-            key={index}
+            key={`${point.date}-${index}`}
             point={point}
-            animationValue={animationValues[index]}
+            maxValue={maxValue}
             colors={colors}
             onPress={() => {
               Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
@@ -103,25 +89,34 @@ export function AnimatedBarChart({
 
 interface BarItemProps {
   point: DataPoint
-  animationValue: SharedValue<number>
+  maxValue: number
   colors: any
   onPress: () => void
 }
 
-function BarItem({ point, animationValue, colors, onPress }: BarItemProps) {
+function BarItem({ point, maxValue, colors, onPress }: BarItemProps) {
+  const animationValue = useSharedValue(0)
   const pressScale = useSharedValue(1)
 
-  const animatedStyle = useAnimatedStyle(() => {
-    return {
-      height: `${animationValue.value * 100}%`,
-    }
-  })
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      animationValue.value = withSpring(point.value / maxValue, {
+        damping: 8,
+        mass: 1,
+        overshootClamping: false,
+      })
+    }, 100)
 
-  const pressedStyle = useAnimatedStyle(() => {
-    return {
-      transform: [{ scale: pressScale.value }],
-    }
-  })
+    return () => clearTimeout(timeout)
+  }, [animationValue, maxValue, point.value])
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    height: `${animationValue.value * 100}%`,
+  }))
+
+  const pressedStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: pressScale.value }],
+  }))
 
   return (
     <Pressable
@@ -155,7 +150,7 @@ function BarItem({ point, animationValue, colors, onPress }: BarItemProps) {
 }
 
 /**
- * Gráfico de linha animado
+ * Gráfico de linha animado.
  */
 export function AnimatedLineChart({
   data,
@@ -163,17 +158,6 @@ export function AnimatedLineChart({
   title = 'Evolução',
 }: AnimatedChartProps) {
   const colors = useColors()
-  const animationValues = data.map(() => useSharedValue(0))
-
-  useEffect(() => {
-    animationValues.forEach((value, index) => {
-      setTimeout(() => {
-        value.value = withTiming(data[index].value / maxValue, {
-          duration: 800,
-        })
-      }, index * 50)
-    })
-  }, [data, animationValues, maxValue])
 
   return (
     <View
@@ -206,9 +190,9 @@ export function AnimatedLineChart({
       >
         {data.map((point, index) => (
           <LinePoint
-            key={index}
+            key={`${point.date}-${index}`}
             point={point}
-            animationValue={animationValues[index]}
+            maxValue={maxValue}
             colors={colors}
             isFirst={index === 0}
             isLast={index === data.length - 1}
@@ -227,16 +211,16 @@ export function AnimatedLineChart({
         }}
       >
         <Text style={{ fontSize: 12, color: colors.muted }}>
-          Mín: {Math.min(...data.map((d) => d.value))}
+          Mín: {data.length ? Math.min(...data.map((d) => d.value)) : 0}
         </Text>
         <Text style={{ fontSize: 12, color: colors.muted }}>
-          Máx: {Math.max(...data.map((d) => d.value))}
+          Máx: {data.length ? Math.max(...data.map((d) => d.value)) : 0}
         </Text>
         <Text style={{ fontSize: 12, color: colors.muted }}>
           Média:{' '}
-          {(
-            data.reduce((sum, d) => sum + d.value, 0) / data.length
-          ).toFixed(1)}
+          {data.length
+            ? (data.reduce((sum, d) => sum + d.value, 0) / data.length).toFixed(1)
+            : '0.0'}
         </Text>
       </View>
     </View>
@@ -245,7 +229,7 @@ export function AnimatedLineChart({
 
 interface LinePointProps {
   point: DataPoint
-  animationValue: SharedValue<number>
+  maxValue: number
   colors: any
   isFirst: boolean
   isLast: boolean
@@ -253,16 +237,26 @@ interface LinePointProps {
 
 function LinePoint({
   point,
-  animationValue,
+  maxValue,
   colors,
   isFirst,
   isLast,
 }: LinePointProps) {
-  const animatedStyle = useAnimatedStyle(() => {
-    return {
-      height: `${animationValue.value * 100}%`,
-    }
-  })
+  const animationValue = useSharedValue(0)
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      animationValue.value = withTiming(point.value / maxValue, {
+        duration: 800,
+      })
+    }, 50)
+
+    return () => clearTimeout(timeout)
+  }, [animationValue, maxValue, point.value])
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    height: `${animationValue.value * 100}%`,
+  }))
 
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-end' }}>
@@ -286,12 +280,17 @@ function LinePoint({
           zIndex: 10,
         }}
       />
+      {(isFirst || isLast) && (
+        <Text style={{ fontSize: 10, color: colors.muted }}>
+          {point.label}
+        </Text>
+      )}
     </View>
   )
 }
 
 /**
- * Card de métrica com animação de número
+ * Card de métrica com animação de número.
  */
 export function AnimatedMetricCard({
   label,
@@ -316,15 +315,13 @@ export function AnimatedMetricCard({
     })
   }, [value, animatedValue])
 
-  const animatedStyle = useAnimatedStyle(() => {
-    return {
-      transform: [
-        {
-          scale: interpolate(animatedValue.value, [0, value], [0.8, 1]),
-        },
-      ],
-    }
-  })
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [
+      {
+        scale: interpolate(animatedValue.value, [0, value || 1], [0.8, 1]),
+      },
+    ],
+  }))
 
   const trendColor =
     trend === 'up'

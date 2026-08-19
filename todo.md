@@ -472,3 +472,10 @@
 - [ ] Documentar endpoints tRPC
 - [ ] Criar guia de segurança
 - [ ] Documentar conformidade HIPAA
+
+## Auditoria de estabilidade — solicitação atual
+- [x] Auditar configuração Expo/EAS, dependências nativas e imports incompatíveis com Expo Go
+- [x] Executar TypeScript, lint, testes Vitest e validação do bundle mobile
+- [x] Investigar e corrigir falhas encontradas na auditoria de estabilidade
+- [x] Repetir os testes após as correções e registrar resultados
+- [x] Validar os fluxos principais em ambiente mobile e documentar limitações do teste sem dispositivo físico
