@@ -1,4 +1,5 @@
 import { Platform } from 'react-native'
+import Constants from 'expo-constants'
 
 /**
  * Tipos de notificações suportadas
@@ -68,16 +69,21 @@ const notificationConfig: Record<
   },
 }
 
-// Lazy load expo-notifications only when needed (not in Expo Go)
+// Lazy load expo-notifications only when necessário.
+// Importar expo-notifications no Expo Go dispara a rotina interna de registro
+// remoto e gera o erro "warnOfExpoGoPushUsage". Portanto, o módulo não é
+// sequer resolvido nesse ambiente.
 let Notifications: any = null
+
+function isExpoGoRuntime() {
+  return Constants.appOwnership === 'expo' || Constants.executionEnvironment === 'storeClient'
+}
 
 async function loadNotifications() {
   if (Notifications) return Notifications
-  if (Platform.OS === 'web') return null
+  if (Platform.OS === 'web' || isExpoGoRuntime()) return null
 
-  // O módulo só é resolvido em runtime. Se o cliente não expuser a API nativa,
-  // o import falha e o restante do app continua funcionando em modo simulado.
-
+  // Em development build/standalone o módulo é carregado somente sob demanda.
   try {
     Notifications = await import('expo-notifications')
     return Notifications

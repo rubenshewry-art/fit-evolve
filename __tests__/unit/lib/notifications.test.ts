@@ -1,7 +1,14 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 vi.mock('react-native', () => ({
-  Platform: { OS: 'web' },
+  Platform: { OS: 'android' },
+}))
+
+vi.mock('expo-constants', () => ({
+  default: {
+    appOwnership: 'expo',
+    executionEnvironment: 'storeClient',
+  },
 }))
 
 describe('notifications fallback', () => {

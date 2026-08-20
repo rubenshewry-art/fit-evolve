@@ -479,3 +479,10 @@
 - [x] Investigar e corrigir falhas encontradas na auditoria de estabilidade
 - [x] Repetir os testes após as correções e registrar resultados
 - [x] Validar os fluxos principais em ambiente mobile e documentar limitações do teste sem dispositivo físico
+
+## Correção de push no Expo Go — solicitação atual
+- [ ] Localizar todas as chamadas a `getExpoPushTokenAsync` e registro automático de device token
+- [ ] Bloquear registro de push remoto no Expo Go sem impedir notificações no development build
+- [ ] Adicionar testes para garantir que o Expo Go não aciona registro remoto
+- [ ] Reexecutar TypeScript, lint, testes e bundle Android
+- [ ] Salvar checkpoint da correção e orientar teste no celular
