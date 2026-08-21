@@ -53,6 +53,11 @@ export default function HomeScreen() {
     router.push('/feed');
   };
 
+  const handleViewMedications = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    router.push('/medications');
+  };
+
   const handleViewProfile = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     router.push('/(tabs)/profile');
@@ -206,6 +211,24 @@ export default function HomeScreen() {
                 <View className="flex-1">
                   <Text className="font-semibold text-foreground">Comunidade</Text>
                   <Text className="text-xs text-muted">Veja o progresso de outros</Text>
+                </View>
+                <Ionicons name="chevron-forward" size={20} color={colors.muted} />
+              </Pressable>
+
+              <Pressable
+                className="flex-row items-center gap-3 rounded-lg p-4 active:opacity-70"
+                style={{ backgroundColor: colors.surface }}
+                onPress={handleViewMedications}
+              >
+                <View
+                  className="h-12 w-12 items-center justify-center rounded-full"
+                  style={{ backgroundColor: colors.success }}
+                >
+                  <Ionicons name="medical" size={20} color={colors.background} />
+                </View>
+                <View className="flex-1">
+                  <Text className="font-semibold text-foreground">Acompanhamento</Text>
+                  <Text className="text-xs text-muted">Registre medicações e efeitos</Text>
                 </View>
                 <Ionicons name="chevron-forward" size={20} color={colors.muted} />
               </Pressable>

@@ -279,6 +279,60 @@ export const notifications = mysqlTable("notifications", {
   createdAt: timestamp("createdAt").defaultNow().notNull(),
 });
 
+/**
+ * Medication Plans Table
+ * User-owned record of a prescribed medication. This table stores only
+ * tracking metadata; it never prescribes, adjusts, or validates treatment.
+ */
+export const medicationPlans = mysqlTable("medicationPlans", {
+  id: int("id").autoincrement().primaryKey(),
+  studentId: int("studentId").notNull(),
+  medicationName: varchar("medicationName", { length: 120 }).notNull(),
+  activeIngredient: varchar("activeIngredient", { length: 120 }).notNull(),
+  therapeuticClass: varchar("therapeuticClass", { length: 120 }).notNull(),
+  indication: varchar("indication", { length: 255 }),
+  prescriberName: varchar("prescriberName", { length: 160 }),
+  prescriptionDate: timestamp("prescriptionDate"),
+  startDate: timestamp("startDate"),
+  status: mysqlEnum("status", ["active", "paused", "completed"]).default("active").notNull(),
+  sourceUrl: text("sourceUrl"),
+  notes: text("notes"),
+  consentToShare: boolean("consentToShare").default(false).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+/**
+ * Medication Applications Table
+ * Records what the user reports as an application. Dose is free text so the
+ * app does not calculate, infer, or recommend a dose.
+ */
+export const medicationApplications = mysqlTable("medicationApplications", {
+  id: int("id").autoincrement().primaryKey(),
+  planId: int("planId").notNull(),
+  studentId: int("studentId").notNull(),
+  appliedAt: timestamp("appliedAt").defaultNow().notNull(),
+  doseText: varchar("doseText", { length: 80 }),
+  notes: text("notes"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+/**
+ * Medication Events Table
+ * Self-reported symptoms and safety flags for professional follow-up.
+ */
+export const medicationEvents = mysqlTable("medicationEvents", {
+  id: int("id").autoincrement().primaryKey(),
+  planId: int("planId").notNull(),
+  studentId: int("studentId").notNull(),
+  eventType: mysqlEnum("eventType", ["nausea", "diarrhea", "vomiting", "constipation", "abdominal_pain", "other"]).notNull(),
+  severity: mysqlEnum("severity", ["mild", "moderate", "severe"]).default("mild").notNull(),
+  occurredAt: timestamp("occurredAt").defaultNow().notNull(),
+  notes: text("notes"),
+  needsProfessionalReview: boolean("needsProfessionalReview").default(false).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
 // Export types
 export type Student = typeof students.$inferSelect;
 export type InsertStudent = typeof students.$inferInsert;
@@ -327,3 +381,10 @@ export type InsertRoutine = typeof routines.$inferInsert;
 
 export type RoutineCompletion = typeof routineCompletions.$inferSelect;
 export type InsertRoutineCompletion = typeof routineCompletions.$inferInsert;
+
+export type MedicationPlan = typeof medicationPlans.$inferSelect;
+export type InsertMedicationPlan = typeof medicationPlans.$inferInsert;
+export type MedicationApplication = typeof medicationApplications.$inferSelect;
+export type InsertMedicationApplication = typeof medicationApplications.$inferInsert;
+export type MedicationEvent = typeof medicationEvents.$inferSelect;
+export type InsertMedicationEvent = typeof medicationEvents.$inferInsert;

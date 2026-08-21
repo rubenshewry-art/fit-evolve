@@ -481,8 +481,15 @@
 - [x] Validar os fluxos principais em ambiente mobile e documentar limitações do teste sem dispositivo físico
 
 ## Correção de push no Expo Go — solicitação atual
-- [ ] Localizar todas as chamadas a `getExpoPushTokenAsync` e registro automático de device token
-- [ ] Bloquear registro de push remoto no Expo Go sem impedir notificações no development build
-- [ ] Adicionar testes para garantir que o Expo Go não aciona registro remoto
-- [ ] Reexecutar TypeScript, lint, testes e bundle Android
-- [ ] Salvar checkpoint da correção e orientar teste no celular
+- [x] Localizar todas as chamadas a `getExpoPushTokenAsync` e registro automático de device token
+- [x] Bloquear registro de push remoto no Expo Go sem impedir notificações no development build
+- [x] Adicionar testes para garantir que o Expo Go não aciona registro remoto
+- [x] Reexecutar TypeScript, lint, testes e bundle Android
+- [x] Salvar checkpoint da correção e orientar teste no celular
+
+## Módulo de acompanhamento de medicamentos para emagrecimento — solicitação atual
+- [x] Pesquisar medicamentos autorizados no Brasil, indicações, efeitos e alertas com fontes oficiais
+- [x] Definir modelo de dados para prescrição, aplicação, efeitos e sinais de alerta sem recomendar tratamento
+- [x] Implementar módulo de registro e acompanhamento clínico no Fit_Evolve
+- [x] Adicionar validações, consentimento e mensagens de segurança
+- [x] Atualizar pitch e apresentação com o diferencial de acompanhamento responsável

@@ -11,6 +11,7 @@ import { marketplaceRouter } from "./marketplace-routers";
 import { timelapseRouter } from "./timelapse-routers";
 import { authTestRouter } from "./auth-test-routers";
 import { routinesRouter } from "./routines-routers";
+import { medicationRouter } from "./medication-routers";
 
 export const appRouter = router({
   // if you need to use socket.io, read and register route in server/_core/index.ts, all api should start with '/api/' so that the gateway can route correctly
@@ -50,6 +51,9 @@ export const appRouter = router({
 
   // Routines routes
   routines: routinesRouter,
+
+  // Medication tracking and safety routes
+  medication: medicationRouter,
 
   // Auth Test routes (for development)
   authTest: authTestRouter,

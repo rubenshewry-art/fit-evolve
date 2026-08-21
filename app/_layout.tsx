@@ -115,6 +115,7 @@ function RootLayoutContent() {
                 <Stack.Screen name="exam-upload" options={{ presentation: "modal" }} />
                 <Stack.Screen name="privacy-panel" options={{ presentation: "modal" }} />
                 <Stack.Screen name="feed" options={{ presentation: "modal" }} />
+                <Stack.Screen name="medications" options={{ presentation: "modal" }} />
               </>
             ) : (
               // Onboarding not completed - show onboarding
